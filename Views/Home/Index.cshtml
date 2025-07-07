@@ -1,0 +1,57 @@
+﻿@model LoginHoursTracker.Models.PunchLogViewModel
+
+@{
+    ViewData["Title"] = "Login Calculator";
+}
+
+<h2>Login Hours Calculator</h2>
+
+<form asp-action="Index" method="post">
+    <div class="form-group">
+        <div class="form-group">
+            <label>Target Login Hours</label>
+            <div class="d-flex gap-2">
+                <input type="number" name="TargetHoursHours" class="form-control" style="max-width: 100px;" placeholder="HH" min="0" required />
+                <input type="number" name="TargetHoursMinutes" class="form-control" style="max-width: 100px;" placeholder="MM" min="0" max="59" required />
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="form-group">
+        <label asp-for="RawLogText">Paste Punch Log Text</label>
+        <textarea asp-for="RawLogText" class="form-control" rows="15" placeholder="Paste your punch log here..."></textarea>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Calculate</button>
+</form>
+
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultModalLabel">Login Hours Summary</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body @(Model.TotalLogin >= TimeSpan.FromHours(Model.TargetHours) ? "bg-success text-white" : "bg-danger text-white")">
+                <p><strong>Total Login Time:</strong> @Model.TotalLogin.ToString(@"hh\:mm")</p
+                <p><strong>Total Break Time:</strong> @Model.TotalBreak</p>
+                <p><strong>Estimated Logout Time:</strong> @(Model.EstimatedLogout?.ToString("hh:mm tt") ?? "Completed")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var totalLogin = '@Model.TotalLogin';
+        if (totalLogin && totalLogin !== '00:00:00') {
+            var resultModal = new bootstrap.Modal($('#resultModal')[0]);
+            resultModal.show();
+        }
+    });
+</script>
+
+

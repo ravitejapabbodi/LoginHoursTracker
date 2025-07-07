@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "lZ0N9y0MQ+O4AoxaAQG+RKeSpj3foEsdtA9Q5S7/lbySxrFQru0OvIp+Xgd+M7aCK/SIooiYa1pHr/Ve1E8xbw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\raviteja.pb\\source\\repos\\LoginHoursTracker\\LoginHoursTracker\\LoginHoursTracker.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1803",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "You are running the 'restore' operation with an 'HTTP' source, 'http://10.20.56.72/CaliberNugetServer/nuget'. Non-HTTPS access will be removed in a future version. Consider migrating to an 'HTTPS' source."
+    }
+  ]
+}
