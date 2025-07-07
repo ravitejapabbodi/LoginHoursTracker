@@ -1,0 +1,21 @@
+## Ignore build folders
+bin/
+obj/
+.vs/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Logs and databases
+*.log
+*.db
+
+## Visual Studio Code
+.vscode/
+
+## Others
+*.DS_Store
+Thumbs.db
