@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LoginHoursTracker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a64d3e1c0a53d673cb814f662935e0c233128f78")]
 [assembly: System.Reflection.AssemblyProductAttribute("LoginHoursTracker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LoginHoursTracker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

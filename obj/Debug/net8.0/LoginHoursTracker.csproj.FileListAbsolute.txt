@@ -28,3 +28,4 @@ C:\Users\raviteja.pb\source\repos\LoginHoursTracker\LoginHoursTracker\obj\Debug\
 C:\Users\raviteja.pb\source\repos\LoginHoursTracker\LoginHoursTracker\obj\Debug\net8.0\LoginHoursTracker.pdb
 C:\Users\raviteja.pb\source\repos\LoginHoursTracker\LoginHoursTracker\obj\Debug\net8.0\LoginHoursTracker.genruntimeconfig.cache
 C:\Users\raviteja.pb\source\repos\LoginHoursTracker\LoginHoursTracker\obj\Debug\net8.0\ref\LoginHoursTracker.dll
+C:\Users\raviteja.pb\source\repos\LoginHoursTracker\LoginHoursTracker\obj\Debug\net8.0\LoginHoursTracker.sourcelink.json
