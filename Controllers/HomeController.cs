@@ -14,20 +14,25 @@ namespace LoginHoursTracker.Controllers
             var model = new PunchLogViewModel
             {
                 RawLogText = "",
-                TargetHours = 8
+                TargetHoursHours = 8,
+                TargetHoursMinutes=0
             };
 
             return View(model);
         }
 
         [HttpPost]
+        [HttpPost]
         public IActionResult Index(PunchLogViewModel model)
         {
-            double.TryParse(Request.Form["TargetHoursHours"], out double hours);
-            double.TryParse(Request.Form["TargetHoursMinutes"], out double minutes);
+            if (!ModelState.IsValid)
+            {
+                // return the view with the same model to show validation messages
+                return View(model);
+            }
 
-            // Combine into one double (e.g. 8.5)
-            model.TargetHours = hours + (minutes / 60.0);
+            var istZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            double totalTarget = model.TargetHours;
             var loginTime = TimeSpan.Zero;
             var breakTime = TimeSpan.Zero;
 
@@ -38,7 +43,7 @@ namespace LoginHoursTracker.Controllers
                              .ToList();
 
             var punchLogs = new List<PunchLog>();
-            //  Reverse parse and extract only DateTime entries
+
             for (int i = lines.Count - 1; i >= 0; i--)
             {
                 string timeLine = lines[i];
@@ -51,23 +56,21 @@ namespace LoginHoursTracker.Controllers
                     });
                 }
             }
+
             if (punchLogs.Count % 2 != 0)
             {
                 punchLogs.Add(new PunchLog
                 {
-                    PunchTime = DateTime.Now
+                    PunchTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, istZone)
                 });
             }
 
-            // Sort by time for accurate calculations
             punchLogs = punchLogs.OrderBy(p => p.PunchTime).ToList();
 
             for (int i = 0; i < punchLogs.Count - 1; i += 2)
             {
-                // Treat every 2 as [In, Out]
                 loginTime += punchLogs[i + 1].PunchTime - punchLogs[i].PunchTime;
 
-                // Optional break time (Out to next In)
                 if (i + 2 < punchLogs.Count)
                 {
                     breakTime += punchLogs[i + 2].PunchTime - punchLogs[i + 1].PunchTime;
@@ -79,7 +82,6 @@ namespace LoginHoursTracker.Controllers
 
             if (remaining > TimeSpan.Zero && punchLogs.Any())
             {
-                // Set Estimated Logout as last punch-in time + remaining
                 model.EstimatedLogout = punchLogs.Last().PunchTime + remaining;
             }
 

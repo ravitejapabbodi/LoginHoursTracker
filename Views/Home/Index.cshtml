@@ -9,18 +9,25 @@
 <div class="container py-5">
     <h2 class="text-center mb-4">Login Hours Calculator</h2>
 
-    <form asp-action="Index" method="post" novalidate>
+    <form asp-action="Index" method="post">
         <div class="row mb-3">
             <label class="form-label">Target Login Hours</label>
             <div class="d-flex gap-2">
-                <input type="number" name="TargetHoursHours" class="form-control" placeholder="HH" min="0" max="23" required />
-                <input type="number" name="TargetHoursMinutes" class="form-control" placeholder="MM" min="0" max="59" required />
+                <div class="w-50">
+                    <input type="number" asp-for="TargetHoursHours" class="form-control" placeholder="HH" min="0" max="23" required />
+                    <span asp-validation-for="TargetHoursHours" class="text-danger"></span>
+                </div>
+                <div class="w-50">
+                    <input type="number" asp-for="TargetHoursMinutes" class="form-control" placeholder="MM" min="0" max="59" required />
+                    <span asp-validation-for="TargetHoursMinutes" class="text-danger"></span>
+                </div>
             </div>
         </div>
 
         <div class="mb-3">
-            <label asp-for="RawLogText" class="form-label">Paste Punch Log Text</label>
+            <label asp-for="RawLogText" class="form-label"></label>
             <textarea asp-for="RawLogText" class="form-control" rows="12" placeholder="Paste your punch log here..." required></textarea>
+            <span asp-validation-for="RawLogText" class="text-danger"></span>
         </div>
 
         <div class="d-grid">
@@ -47,8 +54,10 @@
 </div>
 
 <!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery + Unobtrusive Validation -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
 <script>
     $(document).ready(function () {
         var totalLogin = '@Model.TotalLogin';
