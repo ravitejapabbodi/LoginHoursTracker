@@ -2,70 +2,209 @@
 
 @{
     ViewData["Title"] = "Login Hours Tracker";
+    var percent = (Model.TargetHours > 0) ? (Model.TotalLogin.TotalHours / Model.TargetHours) * 100 : 0;
+    if (percent > 100) percent = 100;
 }
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
+<style>
+    body{
+        background: linear-gradient(135deg,#f5f7fa,#c3cfe2);
+    }
+
+    .card{
+        border-radius:15px;
+    }
+
+    .timeline{
+        border-left:3px solid #0d6efd;
+        padding-left:15px;
+    }
+
+    .timeline-item{
+        margin-bottom:8px;
+    }
+
+    footer{
+        margin-top:40px;
+    }
+</style>
+
 <div class="container py-5">
-    <h2 class="text-center mb-4">Login Hours Calculator</h2>
 
-    <form asp-action="Index" method="post">
-        <div class="row mb-3">
-            <label class="form-label">Target Login Hours</label>
-            <div class="d-flex gap-2">
-                <div class="w-50">
-                    <input type="number" asp-for="TargetHoursHours" class="form-control" placeholder="HH" min="0" max="23" required />
-                    <span asp-validation-for="TargetHoursHours" class="text-danger"></span>
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-4">
+
+            <h2 class="text-center mb-4">
+                ⏱ Login Hours Calculator
+            </h2>
+
+            <form asp-action="Index" method="post">
+
+                <div class="row mb-3">
+                    <label class="form-label fw-bold">Target Login Hours</label>
+
+                    <div class="d-flex gap-2">
+
+                        <div class="w-50">
+                            <input type="number" asp-for="TargetHoursHours" class="form-control" placeholder="HH" min="0" max="23" required />
+                            <span asp-validation-for="TargetHoursHours" class="text-danger"></span>
+                        </div>
+
+                        <div class="w-50">
+                            <input type="number" asp-for="TargetHoursMinutes" class="form-control" placeholder="MM" min="0" max="59" required />
+                            <span asp-validation-for="TargetHoursMinutes" class="text-danger"></span>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="w-50">
-                    <input type="number" asp-for="TargetHoursMinutes" class="form-control" placeholder="MM" min="0" max="59" required />
-                    <span asp-validation-for="TargetHoursMinutes" class="text-danger"></span>
+
+                <div class="mb-3">
+                    <label asp-for="RawLogText" class="form-label fw-bold"></label>
+
+<textarea asp-for="RawLogText"
+          class="form-control"
+          rows="10"
+          placeholder="Example:
+09:10 AM
+01:00 PM
+02:00 PM
+06:45 PM"
+          required></textarea>
+
+                    <span asp-validation-for="RawLogText" class="text-danger"></span>
                 </div>
-            </div>
-        </div>
 
-        <div class="mb-3">
-            <label asp-for="RawLogText" class="form-label"></label>
-            <textarea asp-for="RawLogText" class="form-control" rows="12" placeholder="Paste your punch log here..." required></textarea>
-            <span asp-validation-for="RawLogText" class="text-danger"></span>
-        </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Calculate Login Hours
+                    </button>
+                </div>
 
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Calculate</button>
+                By <strong>Raviteja Pabbodi ❤️</strong>
+            </form>
+
         </div>
-    </form>
-    <footer class="text-center text-muted my-4">
-        Made with ❤️ by Raviteja Pabbodi
-    </footer>
+    </div>
+
 </div>
-<!-- Result Modal -->
-<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+
+<!-- RESULT MODAL -->
+
+<div class="modal fade" id="resultModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header @(Model.TotalLogin >= TimeSpan.FromHours(Model.TargetHours) ? "bg-success" : "bg-danger") text-white">
-                <h5 class="modal-title" id="resultModalLabel">Login Summary</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            <div class="modal-header @(Model.TotalLogin >= TimeSpan.FromHours(Model.TargetHours) ? "bg-success" : "bg-warning") text-white">
+
+                <h5 class="modal-title">Login Summary</h5>
+
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
             </div>
+
             <div class="modal-body">
+
+                @if (Model.TotalLogin >= TimeSpan.FromHours(Model.TargetHours))
+                {
+                    <div class="alert alert-success text-center fw-bold">
+                        🎉 Great Job! You completed today's login hours!
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning text-center fw-bold">
+                        ⏳ Keep going! You're almost there.
+                    </div>
+                }
+
                 <p><strong>Total Login Time:</strong> @Model.TotalLogin.ToString(@"hh\:mm")</p>
+
                 <p><strong>Total Break Time:</strong> @Model.TotalBreak.ToString(@"hh\:mm")</p>
-                <p><strong>Estimated Logout Time:</strong> @(Model.EstimatedLogout?.ToString("hh:mm tt") ?? "Completed")</p>
+
+                <p>
+                    <strong>Estimated Logout Time:</strong>
+
+                    @if (Model.EstimatedLogout != null)
+                    {
+                        <span class="badge bg-warning text-dark fs-6">
+                            @Model.EstimatedLogout?.ToString("hh:mm tt")
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success fs-6">
+                            Completed 🎉
+                        </span>
+                    }
+
+                </p>
+
+                <!-- Progress Bar -->
+
+                <div class="mt-3">
+
+                    <label class="fw-bold">Progress</label>
+
+                    <div class="progress" style="height:25px;">
+
+                        <div class="progress-bar @(percent >= 100 ? "bg-success" : "bg-info")"
+                             style="width:@percent%">
+                            @percent.ToString("0")%
+                        </div>
+
+                    </div>
+
+                </div>               
+
             </div>
         </div>
     </div>
 </div>
+
 <hr />
+
+
 <!-- Scripts -->
-<!-- jQuery + Unobtrusive Validation -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+
+<!-- Confetti -->
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <script>
+
     $(document).ready(function () {
-        var totalLogin = '@Model.TotalLogin';
-        if (totalLogin && totalLogin !== '00:00:00') {
-            var modal = new bootstrap.Modal(document.getElementById('resultModal'));
-            modal.show();
-        }
+
+    var totalLogin = '@Model.TotalLogin';
+    var percent = @percent;
+
+    if (totalLogin && totalLogin !== '00:00:00') {
+
+    var modal = new bootstrap.Modal(document.getElementById('resultModal'));
+
+    modal.show();
+
+    if(percent >= 100){
+
+    confetti({
+    particleCount:150,
+    spread:70,
+    origin:{y:0.6}
     });
+
+    }
+
+    }
+
+    });
+
 </script>
